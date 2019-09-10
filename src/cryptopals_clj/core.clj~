@@ -1,0 +1,16 @@
+(ns cryptopals-clj.core)
+
+(defn hex->base64
+  "converts hex to base64"
+  [original-hex]
+  (defn hex->bytes
+    "converts hex to bytes"
+    [hex]
+    (byte-array hex))
+
+  (defn bytes->base64
+    "converts bytes to base64"
+    [bytes]
+    bytes)
+
+  (->> original-hex hex->bytes bytes->hex))
