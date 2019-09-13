@@ -49,3 +49,25 @@
          (map #(Integer/toHexString %))
          (apply str))))
 
+;; Challenge 3
+(defn single-byte-xor
+  "XORs a given hexed string against an equal-length list of a given byte"
+  [hexed-string single-byte]
+  (let [result (loop [hexed-byte-vec (vec (hex-string->byte-array hexed-string))
+         repeated-byte-vec (vec (repeat (count hexed-byte-vec) single-byte))
+                      result []]
+    (if (empty? hexed-byte-vec)
+      result
+      (recur (rest hexed-byte-vec) (rest repeated-byte-vec)
+             (conj result (bit-xor (first hexed-byte-vec) (first repeated-byte-vec))))))]
+    result))
+
+(defn byte-vec->string
+  "takes a vector of bytes and converts it to a string"
+  [byte-vec]
+  (apply str (map char byte-vec)))
+
+(defn try-keys
+  "tries all possible bytes to break the ciphertext and prints out text of each"
+  [hexed-string]
+  (map byte-vec->string (map (partial single-byte-xor hexed-string) (range 0 127))))
