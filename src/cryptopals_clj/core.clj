@@ -113,3 +113,35 @@
    \u 2.758 \v 0.978 \w 2.36 \x 0.15
    \y 1.974 \z 0.074})
 
+;; TODO: Strip string of non-alphanumeric characters
+
+(defn calculate-distances
+  "Finds distance between real frequency for a char and a "
+  [english-char-freqs string-char-freqs distances]
+  (let [current-char (first (first english-char-freqs))
+        base-freq (get english-char-freqs current-char)
+        real-freq (get string-char-freqs current-char)]
+    (if (empty? english-char-freqs)
+      distances
+      (if (nil? real-freq)
+        (recur (dissoc english-char-freqs current-char)
+               (dissoc string-char-freqs current-char)
+               (assoc distances current-char base-freq))
+        (recur (dissoc english-char-freqs current-char)
+               (dissoc string-char-freqs current-char)
+               (assoc distances current-char (Math/abs (- real-freq base-freq))))))))
+
+(defn make-english-score
+  "Sum distances for individual characters"
+  [string]
+  (let [distances (calculate-distances english-char-freqs
+                                       (char-count-scaled (character-count string))
+                                       {})]
+    (reduce + (vals distances))))
+
+(defn top-n-likely-english
+  "returns the strings that are most likely to be English"
+  [n strings english-scores]
+  (if (empty? strings)
+    (take n (sort-by val < english-scores))
+    (recur n (rest strings) (assoc english-scores (first strings) (make-english-score (first strings))))))  
