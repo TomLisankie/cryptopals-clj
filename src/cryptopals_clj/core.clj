@@ -51,18 +51,13 @@
          (apply str))))
 
 ;; Challenge 3
+
 (defn single-byte-xor
   "XORs a given hexed string against an equal-length list of a given byte"
   [hexed-string single-byte]
-  (let [result (loop [hexed-byte-vec (vec (hex-string->byte-array hexed-string))
-         repeated-byte-vec (vec (repeat (count hexed-byte-vec) single-byte))
-                      result []]
-    (if (empty? hexed-byte-vec)
-      result
-      (recur (rest hexed-byte-vec) (rest repeated-byte-vec)
-             (conj result
-                   (bit-xor (first hexed-byte-vec) (first repeated-byte-vec))))))]
-    result))
+  (let [hexed-byte-vec (vec (hex-string->byte-array hexed-string))
+        repeated-byte-vec (vec (repeat (count hexed-byte-vec) single-byte))]
+    (map bit-xor hexed-byte-vec repeated-byte-vec)))
 
 (defn byte-vec->string
   "takes a vector of bytes and converts it to a string"
@@ -113,8 +108,6 @@
    \u 2.758 \v 0.978 \w 2.36 \x 0.15
    \y 1.974 \z 0.074})
 
-;; TODO: Strip string of non-alphanumeric characters
-
 (defn calculate-distances
   "Finds distance between real frequency for a char and a "
   [english-char-freqs string-char-freqs distances]
@@ -144,4 +137,8 @@
   [n strings english-scores]
   (if (empty? strings)
     (take n (sort-by val < english-scores))
-    (recur n (rest strings) (assoc english-scores (first strings) (make-english-score (first strings))))))  
+    (recur n
+           (rest strings)
+           (assoc english-scores
+                  (first strings)
+                  (make-english-score (first strings))))))
