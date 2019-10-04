@@ -62,7 +62,9 @@
 (defn byte-vec->string
   "takes a vector of bytes and converts it to a string"
   [byte-vec]
-  (apply str (map char byte-vec)))
+  ;; Try/catch because sometimes the bytes are signed but chars aren't
+  (let [byte-vec-no-negs (map #(if (< % 0) 32 %) byte-vec)]
+    (apply str (map char byte-vec-no-negs))))
 
 (defn try-keys
   "tries all possible bytes to break the ciphertext and prints out text of each"
@@ -142,3 +144,21 @@
            (assoc english-scores
                   (first strings)
                   (make-english-score (first strings))))))
+
+;; Challenge 4
+
+(defn find-the-english
+  "Finds the sentence that is likely to be English from a group of hexed strings"
+  [hexed-strings]
+  (let [decrypted-strings (map try-keys hexed-strings)
+        most-english-semifinalists (flatten (map
+                                             first
+                                             (map
+                                              first
+                                              (map
+                                               #((partial top-n-likely-english 1 % {}))
+                                               decrypted-strings))))
+        most-english-finalist (first
+                               (first
+                                (top-n-likely-english 1 most-english-semifinalists {})))]
+    most-english-finalist))
