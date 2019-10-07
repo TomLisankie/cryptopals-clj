@@ -192,3 +192,28 @@
         string-bytes-len (count string-bytes)
         key-bytes-repeated (repeat-key-bytes string-bytes-len key)]
     (byte-seq->hex-string (map bit-xor string-bytes key-bytes-repeated))))
+
+;; Challenge 6
+
+(defn population-count
+  "counts the number of 1s in a byte"
+  [byte]
+  (count (filter #(= % true) (map (partial bit-test byte) (range 0 8)))))
+
+(defn byte-hamming-distance
+  "Counts number of 1s in the resulting byte of byte1 XOR byte2"
+  [byte1 byte2]
+  (let [result-byte (bit-xor byte1 byte2)]
+    (population-count result-byte)))
+    
+
+(defn hamming-distance
+  "Finds the Hamming distance between two ASCII strings"
+  [string1 string2]
+  (assert (= (count string1) (count string2)))
+  (apply + (map byte-hamming-distance (map byte string1) (map byte string2))))
+  
+
+(defn break-repeating-key-xor
+  [keysize]
+  "")
