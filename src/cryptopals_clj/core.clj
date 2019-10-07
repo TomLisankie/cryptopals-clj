@@ -162,3 +162,33 @@
                                (first
                                 (top-n-likely-english 1 most-english-semifinalists {})))]
     most-english-finalist))
+
+;; Challenge 5
+
+(defn hexify [i]
+  "turns a single byte into a hex string"
+  (format "%02x" i))
+
+(defn byte-seq->hex-string
+  "Converts a sequence of bytes to a hex string"
+  [byte-seq]
+  (apply str (map hexify byte-seq)))
+
+(defn repeat-key-bytes
+  "repeats bytes of key including remainder"
+  [string-bytes-len key]
+  (let [key-len (count key)
+        remainder (mod string-bytes-len key-len)]
+    (if (= remainder 0)
+      (map byte (reduce str (repeat (/ string-bytes-len key-len) key)))
+      (map byte (reduce str (concat (repeat (/ string-bytes-len key-len) key)
+                                    (take remainder key)))))))
+
+(defn repeating-key-xor
+  [string key]
+  (let [key-bytes (map byte key)
+        string-bytes (map byte string)
+        key-bytes-len (count key-bytes)
+        string-bytes-len (count string-bytes)
+        key-bytes-repeated (repeat-key-bytes string-bytes-len key)]
+    (byte-seq->hex-string (map bit-xor string-bytes key-bytes-repeated))))

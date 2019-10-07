@@ -19,3 +19,9 @@
   "Tests to see if a fixed XOR opertation on two strings produces the proper output"
   (testing "fixed-xor"
     (is (= (fixed-xor "1c0111001f010100061a024b53535009181c" "686974207468652062756c6c277320657965") "746865206b696420646f6e277420706c6179"))))
+
+;; Challenge 5
+(deftest test-repeating-key-xor
+  "Tests to see if repeating key XOR is working as specified"
+  (testing "repeating-key-xor"
+    (is (= (repeating-key-xor "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal" "ICE") "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"))))
