@@ -34,18 +34,20 @@
   [bit-seq]
   (bit-seq->binary-unit-seq bit-seq 6))
 
-(defn 8-bit-seq->byte-int
+(defn eight-bit-seq->byte-int
   "takes a sequence of 8-bits and turns it into its Java byte equivalent"
-  [8-bit-seq]
-  (let [bit-strings (map #(if (= % true) "1" "0") 8-bit-seq)
+  [eight-bit-seq]
+  (let [bit-strings (map #(if (= % true) "1" "0") eight-bit-seq)
         byte-string (apply str bit-strings)]
-    (Integer/parseInt byte-string 2)))
+    (- (Integer/parseInt byte-string 2) 128)))
 
 (defn bit-seq->bytes
   "takes a bit sequence and converts it to a sequence of bytes"
   [bit-seq]
   (let [byte-units (bit-seq->binary-unit-seq bit-seq 8)]
-    (map 8-bit-seq->byte-int byte-units)))
+    (map eight-bit-seq->byte-int byte-units)))
+
+;; ^ At this point, probably just easier to build my own base64 conversion function
 
 ;; (defn base64-bit-units->base64-string
 
